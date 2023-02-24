@@ -1,5 +1,6 @@
 import * as httpStatus from "http-status";
 import User from "../models/user.model";
+
 /**
  * Create a user
  * @param {Object} userBody
@@ -14,20 +15,6 @@ const createUser = async (userBody) => {
   }
   const usr = await User.create(userBody);
   return usr.toObject();
-};
-
-/**
- * Query for users
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>}
- */
-const queryUsers = async (filter, options) => {
-  const users = await User.paginate(filter, options);
-  return users;
 };
 
 /**
@@ -76,111 +63,8 @@ const deleteUserById = async (userId) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  await user.remove();
-  return user;
-};
-
-/**
- *
- * @param {ObjectId} userId
- * @param {ObjectId} artworkId
- * @returns {Promise<User>}
- */
-const addArtworkToFavourites = async (userId, artworkId) => {
-  return await User.findOneAndUpdate(
-    { _id: userId },
-    { $push: { favouriteArtworks: artworkId } }
-  ).lean();
-};
-
-/**
- *
- * @param {ObjectId} userId
- * @param {ObjectId} artworkId
- * @returns {Promise<User>}
- */
-const removeArtworkFromFavourite = async (userId, artworkId) => {
-  return await User.findOneAndUpdate(
-    { _id: userId },
-    { $pull: { favouriteArtworks: artworkId } }
-  ).lean();
-};
-
-/**
- *
- * @param {ObjectId} userId
- * @param {number} page
- * @param {number} perPage
- */
-
-const getFavouriteArtworks = async (userId, page, perPage) => {
-  const user = await User.findOne({ _id: userId })
-    .select(["favouriteArtworks"])
-    .populate("favouriteArtworks")
-    .limit(parseInt(perPage))
-    .skip(page * perPage)
-    .lean();
-
-  return user ? user.favouriteArtworks : [];
-};
-
-const followOtherUser = async (userId, otherUserId) => {
-  await User.findOneAndUpdate(
-    { _id: otherUserId },
-    { $push: { followers: userId } },
-    { new: true }
-  );
-  return await User.findOneAndUpdate(
-    { _id: userId },
-    { $push: { following: otherUserId } },
-    { new: true }
-  ).lean();
-};
-
-const unFollowUser = async (userId, otherUserId) => {
-  await User.findOneAndUpdate(
-    { _id: otherUserId },
-    { $pull: { followers: userId } },
-    { new: true }
-  );
-  return await User.findOneAndUpdate(
-    { _id: userId },
-    { $pull: { following: otherUserId } },
-    { new: true }
-  ).lean();
-};
-
-const getUserFollowers = async (userId, page, perPage) => {
-  const user = await User.findOne({ _id: userId })
-    .populate({
-      path: "followers",
-      options: {
-        limit: parseInt(perPage),
-        skip: page * perPage,
-      },
-    })
-    .lean();
-  return user.followers;
-};
-
-const getUserFollowing = async (userId, page, perPage) => {
-  const user = await User.findOne({ _id: userId })
-    .populate({
-      path: "following",
-      options: {
-        limit: parseInt(perPage),
-        skip: page * perPage,
-      },
-    })
-    .lean();
-  return user.following;
-};
-
-const removeArtwork = async (userId, artworkId) => {
-  await User.findOneAndUpdate(
-    { _id: userId },
-    { $pull: { artworks: artworkId } }
-  );
+  await User.deleteOne({ _id: userId });
+  return "user deleted successfully";
 };
 
 const searchUsersByName = async (keyword, page, perPage) => {
@@ -189,55 +73,12 @@ const searchUsersByName = async (keyword, page, perPage) => {
     .skip(page * perPage);
 };
 
-const getUsersByMostArtworks = async () => {
-  return await Stats.aggregate([
-    {
-      $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "_id",
-        as: "user",
-      },
-    },
-    {
-      $match: {
-        $and: [
-          {
-            "user.role": "artist",
-          },
-          {
-            soldArts: { $gt: 0 },
-          },
-        ],
-      },
-    },
-    {
-      $sort: {
-        soldArts: -1,
-      },
-    },
-    {
-      $unwind: "$user",
-    },
-  ]).limit(5);
-};
-
 export {
   createUser,
-  queryUsers,
   getUserById,
   getUserByEmail,
   updateUserById,
   deleteUserById,
   getUserByAddress,
-  addArtworkToFavourites,
-  removeArtworkFromFavourite,
-  getFavouriteArtworks,
-  followOtherUser,
-  unFollowUser,
-  getUserFollowers,
-  getUserFollowing,
-  removeArtwork,
   searchUsersByName,
-  getUsersByMostArtworks,
 };
