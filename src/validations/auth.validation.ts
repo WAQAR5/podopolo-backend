@@ -1,12 +1,13 @@
-const Joi = require("joi");
+import * as Joi from "joi";
 const { password } = require("./custom.validation");
 
 const register = {
   body: Joi.object().keys({
+    name: Joi.string().required(),
     userName: Joi.string().required(),
+    password: Joi.string().required(),
     email: Joi.string().required().email(),
-    address: Joi.string().required(),
-    role: Joi.string().required(),
+    age: Joi.number().required(),
   }),
 };
 

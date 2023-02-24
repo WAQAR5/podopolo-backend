@@ -1,16 +1,11 @@
-const httpStatus = require("http-status");
-
+import * as httpStatus from "http-status";
 import catchAsync from "../utils/catchAsync";
+import { createUser } from "../services/user.service";
 
 const register = catchAsync(async (req, res) => {
-  //   const user = await userService.createUser(req.body);
-  //   EVENT.emit("create-stats", {
-  //     userId: user._id,
-  //   });
-  //   const tokens = await tokenService.generateAuthTokens(user);
+  console.log("🚀 ~ file: auth.controller.ts:6 ~ register ~ req:", req);
+
   res.status(httpStatus.OK).send({ message: "success" });
 });
 
-module.exports = {
-  register,
-};
+export { register };
