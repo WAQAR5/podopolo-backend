@@ -1,9 +1,10 @@
 // @ts-ignore
 import * as mongoose from "mongoose";
+import config from "./config/config";
+import logger from "./config/logger";
 const app = require("./app");
-const logger = require("./config/logger");
+
 // @ts-ignore
-const config = require("./config/config");
 
 const main = async () => {
   let server: any;

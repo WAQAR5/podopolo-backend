@@ -1,4 +1,5 @@
 import httpStatus from "http-status";
+import ApiError from "./utils/ApiError";
 
 const express = require("express");
 const helmet = require("helmet");
@@ -13,7 +14,7 @@ const { jwtStrategy } = require("./config/passport");
 const { authLimiter } = require("./middlewares/rateLimiter");
 const routes = require("./routes/v1");
 const { errorConverter, errorHandler } = require("./middlewares/error");
-const ApiError = require("./utils/ApiError");
+
 const { fileParser } = require("express-multipart-file-parser");
 
 const app = express();
