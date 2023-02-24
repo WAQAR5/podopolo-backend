@@ -154,11 +154,11 @@ const getUserFeed = catchAsync(async (req, res) => {
   const currentUser = req.user._id;
 
   const tweets = await Tweet.aggregate([
-    // {
-    //   $match: {
-    //     user: { $ne: currentUser },
-    //   },
-    // },
+    {
+      $match: {
+        user: { $ne: currentUser },
+      },
+    },
     {
       $lookup: {
         from: "likes",
