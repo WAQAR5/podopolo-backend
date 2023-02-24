@@ -1,14 +1,10 @@
-import httpStatus from "http-status";
+import { login, register } from "../../controllers/auth.controller";
 import validate from "../../middlewares/validate";
 const express = require("express");
 const authValidation = require("../../validations/auth.validation");
-import { register } from "../../controllers/auth.controller";
 const router = express.Router();
 
-router.get("/", [], (req, res) => {
-  res.status(httpStatus.OK).send({ message: "success" });
-});
-
 router.post("/register", validate(authValidation.register), register);
+router.post("/login", validate(authValidation.login), login);
 
 module.exports = router;

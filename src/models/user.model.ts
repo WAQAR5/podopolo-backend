@@ -8,6 +8,7 @@ export interface UserDocument extends Document {
   userName: string;
   email: string;
   password: string;
+  age: number;
   role: string;
   isPasswordMatch: (password: string) => Promise<boolean>;
 }
@@ -27,6 +28,10 @@ const userSchema = new mongoose.Schema<UserDocument, UserModel>(
       type: String,
       required: true,
       trim: true,
+    },
+    age: {
+      type: Number,
+      required: true,
     },
     email: {
       type: String,
