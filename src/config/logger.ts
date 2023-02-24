@@ -1,5 +1,4 @@
-const winston = require("winston");
-
+import winston from "winston";
 const enumerateErrorFormat = winston.format(info => {
   if (info instanceof Error) {
     Object.assign(info, { message: info.stack });

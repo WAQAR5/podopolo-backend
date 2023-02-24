@@ -30,4 +30,4 @@ if (config.env === "development") {
   });
 }
 
-module.exports = router;
+export default router;
