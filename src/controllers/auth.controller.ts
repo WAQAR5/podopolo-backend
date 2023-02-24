@@ -11,4 +11,6 @@ const register = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({ message: "success" });
 });
 
-export { register };
+module.exports = {
+  register,
+};
