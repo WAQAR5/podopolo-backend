@@ -1,14 +1,16 @@
 import httpStatus from "http-status";
 import validate from "../../middlewares/validate";
-const express = require("express");
-const authValidation = require("../../validations/auth.validation");
-import { register } from "../../controllers/auth.controller";
-const router = express.Router();
+import express from "express";
 
-router.get("/", [], (req, res) => {
+const authValidation = require("../../validations/auth.validation");
+
+import { register } from "../../controllers/auth.controller";
+const authRoute = express.Router();
+
+authRoute.get("/", [], (req, res) => {
   res.status(httpStatus.OK).send({ message: "success" });
 });
 
-router.post("/register", validate(authValidation.register), register);
+authRoute.post("/register", validate(authValidation.register), register);
 
-module.exports = router;
+export default authRoute;
