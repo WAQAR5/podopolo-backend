@@ -3,6 +3,7 @@ import {
   createTweet,
   deleteTweet,
   getUserFeed,
+  getUserTweet,
   handleTweetLikeStatus,
   updateTweet,
 } from "../../controllers/tweet.controller";
@@ -14,7 +15,7 @@ const tweetRoute = express.Router();
 
 tweetRoute.get("/feed", auth("tweet"), getUserFeed);
 
-tweetRoute.get("/", auth("tweet"), getUserTweets);
+tweetRoute.get("/", auth("tweet"), getUserTweet);
 
 tweetRoute.post(
   "/create",
