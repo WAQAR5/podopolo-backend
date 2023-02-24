@@ -8,13 +8,14 @@ const app = require("./app");
 
 const main = async () => {
   let server: any;
+
   mongoose.set("strictQuery", true);
   await mongoose
     .connect(config.mongoose.url)
     .then(() => {
       console.log("--database connection successful--");
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("--error connecting to database---");
     });
 

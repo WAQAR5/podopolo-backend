@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { toJSON, paginate } from "./plugins";
 import { roles } from "../config/roles";
 
-export interface UserDocument extends Document {
+export interface IUser extends Document {
   userName: string;
   email: string;
   password: string;
@@ -13,7 +13,7 @@ export interface UserDocument extends Document {
   isPasswordMatch: (password: string) => Promise<boolean>;
 }
 
-interface UserModel extends Model<UserDocument> {
+interface UserModel extends Model<IUser> {
   isEmailTaken: (email: string, excludeUserId?: string) => Promise<boolean>;
   isAddressTaken: (address: string, excludeUserId?: string) => Promise<boolean>;
   isUsernameTaken: (
@@ -22,7 +22,7 @@ interface UserModel extends Model<UserDocument> {
   ) => Promise<boolean>;
 }
 
-const userSchema = new mongoose.Schema<UserDocument, UserModel>(
+const userSchema = new mongoose.Schema<IUser, UserModel>(
   {
     userName: {
       type: String,
@@ -83,11 +83,11 @@ userSchema.statics.isUsernameTaken = async function (
 };
 
 userSchema.methods.isPasswordMatch = async function (password: string) {
-  const user = this as UserDocument;
+  const user = this as IUser;
   return bcrypt.compare(password, user.password);
 };
 
-userSchema.pre<UserDocument>("save", async function (next) {
+userSchema.pre<IUser>("save", async function (next) {
   const user = this;
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -95,6 +95,6 @@ userSchema.pre<UserDocument>("save", async function (next) {
   next();
 });
 
-const User = mongoose.model<UserDocument, UserModel>("User", userSchema);
+const User = mongoose.model<IUser, UserModel>("User", userSchema);
 
 export default User;

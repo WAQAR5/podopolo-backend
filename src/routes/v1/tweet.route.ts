@@ -1,17 +1,24 @@
-import httpStatus from "http-status";
 import express from "express";
-import { createTweet, deleteTweet } from "../../controllers/tweet.controller";
+import {
+  createTweet,
+  deleteTweet,
+  updateTweet,
+} from "../../controllers/tweet.controller";
+import auth from "../../middlewares/auth";
 import validate from "../../middlewares/validate";
+import { getUserTweets } from "../../services/tweet.service";
 import { createTweet as createTweetValidation } from "../../validations/tweet.validation";
 const tweetRoute = express.Router();
 
-tweetRoute.get("/", [], (req, res) => {
-  res.status(httpStatus.OK).send({ message: "Tweet Module" });
-});
+tweetRoute.get("/", auth("tweet"), getUserTweets);
 
-tweetRoute.post("/create", validate(createTweetValidation), createTweet);
+tweetRoute.post(
+  "/create",
+  [auth("tweet"), validate(createTweetValidation)],
+  createTweet
+);
 
-//This need to be checked
-tweetRoute.delete("/:id", [], deleteTweet);
+tweetRoute.delete("/:id", auth("tweet"), deleteTweet);
+tweetRoute.patch("/:id", auth("tweet"), updateTweet);
 
 export default tweetRoute;
