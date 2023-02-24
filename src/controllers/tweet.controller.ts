@@ -21,9 +21,6 @@ const createTweet = catchAsync(async (req, res) => {
 
   const IS_THREAD = body.length > 1;
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   const savePayload = {
     message: sortedTweets[0].message,
     user: user._id,
@@ -61,11 +58,12 @@ const getUserTweet = catchAsync(async (req, res) => {
 });
 
 const deleteTweet = catchAsync(async (req, res) => {
-  const tweetId = req.param.id;
+  const tweetId = req.params.id;
+
   const user = req.user;
 
   if (!tweetId) {
-    res
+    return res
       .status(httpStatus.BAD_REQUEST)
       .send({ message: "tweet id is required" });
   }
@@ -73,19 +71,25 @@ const deleteTweet = catchAsync(async (req, res) => {
   const tweet = await getTweetById(tweetId);
 
   if (!tweet) {
-    res.status(httpStatus.NOT_FOUND).send({ message: "Tweet not found" });
+    return res
+      .status(httpStatus.NOT_FOUND)
+      .send({ message: "Tweet not found" });
   } else {
     if (tweet.user.toString() !== user._id.toString()) {
-      res.status(httpStatus.UNAUTHORIZED).send({ message: "Unauthorized" });
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .send({ message: "Unauthorized" });
     } else {
       await deleteTweetbyId(tweetId);
-      res.status(httpStatus.OK).send({ message: "Tweet deleted successfully" });
+      return res
+        .status(httpStatus.OK)
+        .send({ message: "Tweet deleted successfully" });
     }
   }
 });
 
 const updateTweet = catchAsync(async (req, res) => {
-  const tweetId = req.param.id;
+  const tweetId = req.params.id;
   const { message } = req.body;
   const user = req.user;
 
