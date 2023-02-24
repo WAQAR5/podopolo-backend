@@ -1,16 +1,12 @@
-import httpStatus from "http-status";
+import { login, register, logout } from "../../controllers/auth.controller";
+import auth from "../../middlewares/auth";
 import validate from "../../middlewares/validate";
-import express from "express";
-
+const express = require("express");
 const authValidation = require("../../validations/auth.validation");
-
-import { register } from "../../controllers/auth.controller";
 const authRoute = express.Router();
 
-authRoute.get("/", [], (req, res) => {
-  res.status(httpStatus.OK).send({ message: "success" });
-});
-
 authRoute.post("/register", validate(authValidation.register), register);
+authRoute.post("/login", validate(authValidation.login), login);
+authRoute.post("/logout", auth("logout"), logout);
 
 export default authRoute;

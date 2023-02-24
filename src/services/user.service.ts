@@ -1,5 +1,6 @@
 import * as httpStatus from "http-status";
 import User from "../models/user.model";
+const ApiError = require("../utils/ApiError");
 
 /**
  * Create a user
@@ -32,7 +33,7 @@ const getUserById = async (id) => {
  * @returns {Promise<User>}
  */
 const getUserByEmail = async (email) => {
-  return User.findOne({ email }).lean();
+  return User.findOne({ email });
 };
 
 const getUserByAddress = async (address) => {

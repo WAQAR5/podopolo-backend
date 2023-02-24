@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
-const moment = require("moment");
+import moment from "moment";
 const httpStatus = require("http-status");
 const userService = require("./user.service");
 const { Token } = require("../models");
 const { tokenTypes } = require("../config/tokens");
+const ApiError = require("../utils/ApiError");
 
 /**
  * Generate token

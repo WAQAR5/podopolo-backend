@@ -13,7 +13,6 @@ const errorConverter = (err, req, res, next) => {
         : httpStatus.INTERNAL_SERVER_ERROR;
     const message = error.message || httpStatus[statusCode];
     error = new ApiError(statusCode, message, false, err.stack);
-    console.log("🚀 ~ file: error.ts:16 ~ errorConverter ~ error:", error);
   }
   next(error);
 };

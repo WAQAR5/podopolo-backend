@@ -126,7 +126,7 @@ const generateVerifyEmailToken = async (user) => {
 };
 
 const removeToken = async (user) => {
-  let res = await Token.findOneAndDelete({ user: user.id });
+  let res = await Token.findOneAndDelete({ user: user._id });
   return res;
 };
 

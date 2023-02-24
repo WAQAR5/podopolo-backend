@@ -1,13 +1,8 @@
-// const allRoles = {
-//   user: ['user'],
-//   artist: ['consumedByArtistOnly'],
-//   admin: ['getUsers', 'manageUsers'],
-// };
-const roles = ["user", "artist", "admin"];
+const roles = ["user", "admin"];
 
 const roleRights = new Map();
-roleRights.set(roles[0], ["manageUsers"]);
-roleRights.set(roles[1], ["consumedByArtistOnly", "manageUsers"]);
-roleRights.set(roles[2], []);
+
+roleRights.set(roles[0], ["logout"]);
+roleRights.set(roles[1], []);
 
 export { roles, roleRights };
