@@ -2,19 +2,31 @@ import * as httpStatus from "http-status";
 import catchAsync from "../utils/catchAsync";
 import { createUser, getUserByEmail } from "../services/user.service";
 import { generateAuthTokens, removeToken } from "../services/token.service";
+import {
+  createUserWallet,
+  getWalletByUserId,
+} from "../services/wallet.service";
+import {
+  generateUserShareWallets,
+  getUserShares,
+} from "../services/share.service";
 
 const register = catchAsync(async (req, res) => {
   const user = await createUser(req.body);
+  const wallet = await createUserWallet({ user: user?._id, balance: 0 });
   const token = await generateAuthTokens(user);
+  await generateUserShareWallets(String(user?._id));
+
   res
     .status(httpStatus.OK)
-    .send({ message: "user created successfully", user, token });
+    .send({ message: "user created successfully", user, token, wallet });
 });
 
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await getUserByEmail(email);
+
   if (!user) {
     return res.status(httpStatus.UNAUTHORIZED).send({
       message: "Invalid credentials",
@@ -27,8 +39,12 @@ const login = catchAsync(async (req, res) => {
       message: "Invalid credentials",
     });
   }
+  const wallet = await getWalletByUserId(user._id);
+  const shares = await getUserShares(user._id);
   const token = await generateAuthTokens(user);
-  res.status(httpStatus.OK).send({ message: "login successfull", user, token });
+  res
+    .status(httpStatus.OK)
+    .send({ message: "login successful", user, token, wallet, shares });
 });
 
 const logout = catchAsync(async (req, res) => {

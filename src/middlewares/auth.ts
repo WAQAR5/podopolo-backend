@@ -16,7 +16,7 @@ const verifyCallback =
 
     if (requiredRights.length) {
       const userRights = roleRights.get(user.role);
-      const hasRequiredRights = requiredRights.every(requiredRight =>
+      const hasRequiredRights = requiredRights.every((requiredRight) =>
         userRights.includes(requiredRight)
       );
       if (!hasRequiredRights) {
@@ -38,7 +38,7 @@ const auth =
       )(req, res, next);
     })
       .then(() => next())
-      .catch(err => next(err));
+      .catch((err) => next(err));
   };
 
 export default auth;

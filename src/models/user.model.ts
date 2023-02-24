@@ -3,6 +3,7 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import { toJSON, paginate } from "./plugins";
 import { roles } from "../config/roles";
+import { UNAVAILABLE_FOR_LEGAL_REASONS } from "http-status";
 
 export interface IUser extends Document {
   userName: string;
@@ -17,7 +18,7 @@ interface UserModel extends Model<IUser> {
   isEmailTaken: (email: string, excludeUserId?: string) => Promise<boolean>;
   isAddressTaken: (address: string, excludeUserId?: string) => Promise<boolean>;
   isUsernameTaken: (
-    username: string,
+    userName: string,
     excludeUserId?: string
   ) => Promise<boolean>;
 }
@@ -28,6 +29,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel>(
       type: String,
       required: true,
       trim: true,
+      unique: false,
     },
     age: {
       type: Number,
