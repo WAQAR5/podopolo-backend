@@ -1,8 +1,8 @@
 // @ts-ignore
 import * as mongoose from "mongoose";
+import { app } from "./app";
 import config from "./config/config";
 import logger from "./config/logger";
-const app = require("./app");
 
 // @ts-ignore
 
@@ -15,7 +15,7 @@ const main = async () => {
     .then(() => {
       console.log("--database connection successful--");
     })
-    .catch((err) => {
+    .catch(err => {
       console.log("--error connecting to database---");
     });
 

@@ -4,3 +4,6 @@
 
 # add package-lock.json to .gitignore
 package-lock.json
+
+# Jest coverage
+coverage

@@ -64,6 +64,10 @@ passport.use("jwt", jwtStrategy);
 // v1 api routes
 app.use("/v1", routes);
 
+app.get("/", (req: any, res: any) => {
+  res.status(200).send({ message: "success" });
+});
+
 // send back a 404 error for any unknown api request
 app.use((req: any, res: any, next: any) => {
   next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
@@ -75,5 +79,4 @@ app.use(errorConverter);
 // handle error
 app.use(errorHandler);
 
-module.exports = app;
-export {};
+export { app };
