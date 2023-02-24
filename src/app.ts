@@ -1,25 +1,27 @@
 import httpStatus from "http-status";
-
-const express = require("express");
-const helmet = require("helmet");
-const xss = require("xss-clean");
-const mongoSanitize = require("express-mongo-sanitize");
-const compression = require("compression");
-const cors = require("cors");
-const passport = require("passport");
-
-const morgan = require("./config/morgan");
-const { jwtStrategy } = require("./config/passport");
-const { authLimiter } = require("./middlewares/rateLimiter");
-const routes = require("./routes/v1");
-const { errorConverter, errorHandler } = require("./middlewares/error");
-const ApiError = require("./utils/ApiError");
-const { fileParser } = require("express-multipart-file-parser");
+import ApiError from "./utils/ApiError";
+// ES6 import syntax
+import express from "express";
+import helmet from "helmet";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
+import compression from "compression";
+import cors from "cors";
+import passport from "passport";
+import {
+  successHandler,
+  errorHandler as morganErrorHandler,
+} from "./config/morgan";
+import { jwtStrategy } from "./config/passport";
+import { authLimiter } from "./middlewares/rateLimiter";
+import { errorConverter, errorHandler } from "./middlewares/error";
+import { fileParser } from "express-multipart-file-parser";
+import routes from "./routes/v1";
 
 const app = express();
 
-app.use(morgan.successHandler);
-app.use(morgan.errorHandler);
+app.use(successHandler);
+app.use(morganErrorHandler);
 
 app.use(helmet());
 

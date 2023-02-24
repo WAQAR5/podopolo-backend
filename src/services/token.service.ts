@@ -1,15 +1,16 @@
 import * as httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 import moment from "moment";
+import config from "../config/config";
 
 import Token from "../models/token.model";
+import ApiError from "../utils/ApiError";
 import * as userService from "./user.service";
 const { tokenTypes } = require("../config/tokens");
 
 // @ts-ignore
-const config = require("../config/config");
+
 // @ts-ignore
-const ApiError = require("../utils/ApiError");
 
 /**
  * Generate token
@@ -72,7 +73,7 @@ const verifyToken = async (token, type) => {
  * @param {User} user
  * @returns {Promise<Object>}
  */
-const generateAuthTokens = async (user) => {
+const generateAuthTokens = async user => {
   const accessToken = generateToken(user._id, tokenTypes.ACCESS);
   await saveToken(accessToken, user._id, tokenTypes.ACCESS);
   return accessToken;
@@ -83,7 +84,7 @@ const generateAuthTokens = async (user) => {
  * @param {string} email
  * @returns {Promise<string>}
  */
-const generateResetPasswordToken = async (email) => {
+const generateResetPasswordToken = async email => {
   const user = await userService.getUserByEmail(email);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "No users found with this email");
@@ -111,7 +112,7 @@ const generateResetPasswordToken = async (email) => {
  * @param {User} user
  * @returns {Promise<string>}
  */
-const generateVerifyEmailToken = async (user) => {
+const generateVerifyEmailToken = async user => {
   const expires = moment().add(
     config.jwt.verifyEmailExpirationMinutes,
     "minutes"
@@ -125,7 +126,7 @@ const generateVerifyEmailToken = async (user) => {
   return verifyEmailToken;
 };
 
-const removeToken = async (user) => {
+const removeToken = async user => {
   let res = await Token.findOneAndDelete({ user: user._id });
   return res;
 };
