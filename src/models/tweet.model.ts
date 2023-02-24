@@ -1,19 +1,24 @@
-import { Schema, model, Document, Types } from "mongoose";
+import {
+  Schema,
+  model,
+  Document,
+  Types,
+  ObjectId,
+  SchemaDefinitionProperty,
+} from "mongoose";
 
 interface ITweet extends Document {
-  user: Types.ObjectId;
   message: string;
-  createdAt: Date;
-  updatedAt: Date;
-  parentTweet?: Types.ObjectId;
+  user: any;
+  parentTweet?: any;
   isThread: boolean;
 }
 
 const tweetSchema = new Schema<ITweet>(
   {
-    user: { type: Types.ObjectId, ref: "User", required: true },
     message: { type: String, required: true },
-    parentTweet: { type: Types.ObjectId, ref: "Tweet", default: undefined },
+    user: { type: Types.ObjectId, ref: "User", required: true },
+    parentTweet: { type: Types.ObjectId, ref: "Tweet", default: null },
     isThread: { type: Boolean, required: true },
   },
   { timestamps: true }
