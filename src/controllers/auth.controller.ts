@@ -1,7 +1,7 @@
 import * as httpStatus from "http-status";
 import catchAsync from "../utils/catchAsync";
 import { createUser, getUserByEmail } from "../services/user.service";
-import { generateAuthTokens } from "../services/token.service";
+import { generateAuthTokens, removeToken } from "../services/token.service";
 
 const register = catchAsync(async (req, res) => {
   const user = await createUser(req.body);
@@ -31,4 +31,13 @@ const login = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({ message: "login successfull", user, token });
 });
 
-export { register, login };
+const logout = catchAsync(async (req, res) => {
+  const user = req.user;
+  await removeToken(user);
+  res.status(httpStatus.OK).send({
+    message: "logout successful",
+    status: true,
+  });
+});
+
+export { register, login, logout };
