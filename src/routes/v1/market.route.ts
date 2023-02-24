@@ -1,6 +1,7 @@
 import express from "express";
 import httpStatus from "http-status";
 import { addBalance } from "../../controllers/market.controller";
+import auth from "../../middlewares/auth";
 import validate from "../../middlewares/validate";
 import { balance } from "../../validations/market.validation";
 
@@ -10,6 +11,10 @@ marketRoute.get("/", [], (req, res) => {
   res.status(httpStatus.OK).send({ message: "Market Module" });
 });
 
-marketRoute.post("/addBalance", validate(balance), addBalance);
+marketRoute.post(
+  "/addBalance",
+  [auth("market"), validate(balance)],
+  addBalance
+);
 
 export default marketRoute;
