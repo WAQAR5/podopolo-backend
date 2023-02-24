@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const config = require("./config");
+import config from "./config";
 
 export const connectDB = async () => {
   console.log("Attempting DB connection");

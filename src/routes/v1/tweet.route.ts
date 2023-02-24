@@ -1,14 +1,13 @@
-import httpStatus from "http-status";
 import express from "express";
 import {
   createTweet,
   deleteTweet,
   updateTweet,
 } from "../../controllers/tweet.controller";
-import validate from "../../middlewares/validate";
-import { createTweet as createTweetValidation } from "../../validations/tweet.validation";
 import auth from "../../middlewares/auth";
+import validate from "../../middlewares/validate";
 import { getUserTweets } from "../../services/tweet.service";
+import { createTweet as createTweetValidation } from "../../validations/tweet.validation";
 const tweetRoute = express.Router();
 
 tweetRoute.get("/", auth("tweet"), getUserTweets);
