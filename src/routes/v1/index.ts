@@ -1,5 +1,6 @@
 import config from "../../config/config";
 import authRoute from "./auth.route";
+import marketRoute from "./market.route";
 import tweetRoute from "./tweet.route";
 
 const express = require("express");
@@ -14,6 +15,10 @@ const defaultRoutes = [
   {
     path: "/tweet",
     route: tweetRoute,
+  },
+  {
+    path: "/market",
+    route: marketRoute,
   },
 ];
 
