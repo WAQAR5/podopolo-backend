@@ -1,14 +1,15 @@
 import { Document, Types, Schema, model } from "mongoose";
 
-export interface IWallet extends Document {
+export interface IWallet {
+  _id?: string;
   user: any;
-  balance: number;
+  balance?: number;
 }
 
 const walletSchema = new Schema<IWallet>(
   {
     user: { type: Types.ObjectId, ref: "User", required: true },
-    balance: { type: Number, required: true },
+    balance: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );

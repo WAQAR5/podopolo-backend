@@ -5,8 +5,20 @@ const tweet = Joi.object({
   id: Joi.number().integer().min(0).required(),
 });
 
+const tweetUpdate = {
+  body: Joi.object().keys({
+    message: Joi.string().required(),
+  }),
+};
+
+const likeTweet = {
+  body: Joi.object().keys({
+    like: Joi.boolean().required(),
+  }),
+};
+
 const createTweet = {
   body: Joi.array().items(tweet).min(1).required(),
 };
 
-export { createTweet };
+export { createTweet, tweet, tweetUpdate, likeTweet };

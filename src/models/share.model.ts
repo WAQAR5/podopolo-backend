@@ -1,6 +1,7 @@
 import { Document, Types, Schema, model } from "mongoose";
 
-export interface IShare extends Document {
+export interface IShare {
+  _id?: string;
   amount: number;
   user: any;
   stock: any;
