@@ -1,6 +1,6 @@
 import { Document, Types, Schema, model } from "mongoose";
 
-interface IWallet extends Document {
+export interface IWallet extends Document {
   user: any;
   balance: number;
 }

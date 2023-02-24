@@ -1,6 +1,6 @@
 import { Document, Types, Schema, model } from "mongoose";
 
-interface IStock extends Document {
+export interface IStock extends Document {
   name: string;
   symbol: string;
   price: number;
