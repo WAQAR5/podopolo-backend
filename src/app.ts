@@ -5,7 +5,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const cors = require("cors");
 const passport = require("passport");
-const httpStatus = require("http-status");
+import * as httpStatus from "http-status";
 
 const morgan = require("./config/morgan");
 const { jwtStrategy } = require("./config/passport");
@@ -17,10 +17,8 @@ const { fileParser } = require("express-multipart-file-parser");
 
 const app = express();
 
-// if (config.env !== "test") {
-//   app.use(morgan.successHandler);
-//   app.use(morgan.errorHandler);
-// }
+app.use(morgan.successHandler);
+app.use(morgan.errorHandler);
 
 app.use(helmet());
 
@@ -64,9 +62,9 @@ passport.use("jwt", jwtStrategy);
 app.use("/v1", routes);
 
 // send back a 404 error for any unknown api request
-app.use((req: any, res: any, next: any) => {
-  next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
-});
+// app.use((req: any, res: any, next: any) => {
+//   next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
+// });
 
 // convert error to ApiError, if needed
 app.use(errorConverter);
@@ -75,5 +73,4 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 module.exports = app;
-
 export {};

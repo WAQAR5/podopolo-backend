@@ -13,6 +13,7 @@ const errorConverter = (err, req, res, next) => {
         : httpStatus.INTERNAL_SERVER_ERROR;
     const message = error.message || httpStatus[statusCode];
     error = new ApiError(statusCode, message, false, err.stack);
+    console.log("🚀 ~ file: error.ts:16 ~ errorConverter ~ error:", error);
   }
   next(error);
 };
@@ -20,6 +21,8 @@ const errorConverter = (err, req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   let { statusCode, message } = err;
+
+  console.log("🚀 ~ file: error.ts:24 ~ errorHandler ~ message:", message);
   if (config.env === "production" && !err.isOperational) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     message = httpStatus[httpStatus.INTERNAL_SERVER_ERROR];
