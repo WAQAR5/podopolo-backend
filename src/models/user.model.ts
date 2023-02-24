@@ -69,14 +69,6 @@ userSchema.statics.isEmailTaken = async function (
   return !!user;
 };
 
-userSchema.statics.isAddressTaken = async function (
-  address: string,
-  excludeUserId?: string
-) {
-  const user = await this.findOne({ address, _id: { $ne: excludeUserId } });
-  return !!user;
-};
-
 userSchema.statics.isUsernameTaken = async function (
   userName: string,
   excludeUserId?: string

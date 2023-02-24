@@ -1,11 +1,4 @@
-import {
-  Schema,
-  model,
-  Document,
-  Types,
-  ObjectId,
-  SchemaDefinitionProperty,
-} from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 interface ITweet extends Document {
   message: string;
