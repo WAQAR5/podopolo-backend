@@ -1,15 +1,17 @@
 import * as httpStatus from "http-status";
+import Tweet from "../models/tweet.model";
 import { IUser } from "../models/user.model";
-import catchAsync from "../utils/catchAsync";
 import {
   deleteTweetbyId,
   getTweetById,
   getUserTweets,
+  likeTweet,
   saveMultipleTweets,
   saveTweet,
+  unlikeTweet,
   updateTweetMessageById,
 } from "../services/tweet.service";
-import mongoose from "mongoose";
+import catchAsync from "../utils/catchAsync";
 
 const createTweet = catchAsync(async (req, res) => {
   const {
@@ -90,7 +92,9 @@ const deleteTweet = catchAsync(async (req, res) => {
 
 const updateTweet = catchAsync(async (req, res) => {
   const tweetId = req.params.id;
+
   const { message } = req.body;
+
   const user = req.user;
 
   if (!tweetId) {
@@ -113,4 +117,121 @@ const updateTweet = catchAsync(async (req, res) => {
   }
 });
 
-export { createTweet, getTweet, deleteTweet, getUserTweet, updateTweet };
+const handleTweetLikeStatus = catchAsync(async (req, res) => {
+  const tweetId = req.params.id;
+  const { like } = req.body;
+  const user = req.user;
+
+  if (!tweetId) {
+    res
+      .status(httpStatus.BAD_REQUEST)
+      .send({ message: "tweet id is required" });
+  }
+
+  const tweet = await getTweetById(tweetId);
+
+  if (!tweet) {
+    res.status(httpStatus.NOT_FOUND).send({ message: "Tweet not found" });
+  } else {
+    if (tweet.user.toString() !== user._id.toString()) {
+      res.status(httpStatus.UNAUTHORIZED).send({ message: "Unauthorized" });
+    } else {
+      if (like) {
+        await likeTweet(String(tweet._id), String(user._id));
+      } else {
+        await unlikeTweet(String(tweet._id));
+      }
+      res.status(httpStatus.OK).send({ message: "Tweet updated successfully" });
+    }
+  }
+});
+
+const getUserFeed = catchAsync(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const currentUser = req.user._id;
+
+  const tweets = await Tweet.aggregate([
+    // {
+    //   $match: {
+    //     user: { $ne: currentUser },
+    //   },
+    // },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        let: { tweetId: "$_id", userId: currentUser },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$tweet", "$$tweetId"] },
+                  { $eq: ["$user", "$$userId"] },
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+            },
+          },
+        ],
+        as: "isLikedByCurrentUser",
+      },
+    },
+    {
+      $addFields: {
+        totalLikes: { $size: "$likes" },
+        isLikedByCurrentUser: {
+          $cond: {
+            if: { $gt: [{ $size: "$isLikedByCurrentUser" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        likes: 0,
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ]);
+
+  const total = await Tweet.countDocuments({ user: { $ne: currentUser } });
+
+  res.status(httpStatus.OK).send({ data: tweets, total, page });
+});
+
+export {
+  createTweet,
+  getTweet,
+  deleteTweet,
+  getUserTweet,
+  updateTweet,
+  handleTweetLikeStatus,
+  getUserFeed,
+};

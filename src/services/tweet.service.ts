@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Like from "../models/like.model";
 import Tweet, { ITweet } from "../models/tweet.model";
 
 const saveTweet = async (payload: ITweet) => {
@@ -26,6 +27,19 @@ const getUserTweets = async (user: string) => {
   return await Tweet.find({ user }).sort({ createdAt: -1 });
 };
 
+const likeTweet = async (tweet: string, user: string) => {
+  return await Like.create({
+    tweet,
+    user,
+  });
+};
+
+const unlikeTweet = async (tweet: string) => {
+  return await Like.deleteOne({
+    tweet,
+  });
+};
+
 export {
   saveTweet,
   saveMultipleTweets,
@@ -33,4 +47,6 @@ export {
   updateTweetMessageById,
   deleteTweetbyId,
   getUserTweets,
+  likeTweet,
+  unlikeTweet,
 };
